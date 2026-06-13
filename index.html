@@ -1,1 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Passport to Adventure 2026">
+<meta name="theme-color" content="#2e7d32">
+<title>Passport to Adventure 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
 
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(160deg, #e8f5e9 0%, #fff9e6 50%, #e3f2fd 100%);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    padding: 12px 12px 80px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    background: linear-gradient(135deg, #2e7d32, #388e3c, #66bb6a);
+    border-radius: 22px;
+    padding: 20px 16px 16px;
+    text-align: center;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(46,125,50,0.28);
+  }
+  .hero::before {
+    content: '🐚☀️🤿🧬🎒🎶🎨📚🎬';
+    position: absolute;
+    top: 5px; left: 0; right: 0;
+    font-size: 18px;
+    letter-spacing: 3px;
+    opacity: 0.3;
+  }
+  .hero h1 {
+    font-family: 'Fredoka One', cursive;
+    color: #fff;
+    font-size: 22px;
+    text-shadow: 2px 3px 0 rgba(0,0,0,0.15);
+    margin-top: 6px;
+    line-height: 1.25;
+  }
+  .hero p {
+    color: #c8e6c9;
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: 700;
+  }
+
+  /* ---- NAME SETUP ---- */
+  #name-setup {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+    text-align: center;
+  }
+  #name-setup h2 { font-family: 'Fredoka One', cursive; color: #2e7d32; font-size: 18px; margin-bottom: 10px; }
+  #name-setup input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #c8e6c9;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  #name-setup input:focus { border-color: #4caf50; }
+  #name-setup button {
+    background: linear-gradient(135deg, #66bb6a, #2e7d32);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  /* ---- PROGRESS ---- */
+  .progress-section {
+    background: white;
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .progress-circle { position: relative; width: 72px; height: 72px; flex-shrink: 0; }
+  .progress-circle svg { transform: rotate(-90deg); width: 72px; height: 72px; }
+  .progress-circle .bg { fill: none; stroke: #e8f5e9; stroke-width: 8; }
+  .progress-circle .fg { fill: none; stroke: #4caf50; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+  .progress-text {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    color: #2e7d32; font-size: 18px; line-height: 1;
+  }
+  .progress-text span { font-size: 9px; font-family: 'Nunito', sans-serif; font-weight: 700; color: #66bb6a; }
+
+  .progress-info { flex: 1; min-width: 0; }
+  .scout-name { font-family: 'Fredoka One', cursive; color: #2e7d32; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .progress-info h2 { font-family: 'Fredoka One', cursive; color: #333; font-size: 15px; }
+  .progress-info p { font-size: 11px; color: #888; margin-top: 2px; }
+  .progress-bar-wrap { background: #e8f5e9; border-radius: 99px; height: 10px; margin-top: 7px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #66bb6a, #2e7d32); border-radius: 99px; transition: width 0.5s ease; }
+
+  /* ---- PATCH EARNED ---- */
+  .patch-banner {
+    display: none;
+    background: linear-gradient(135deg, #ffd54f, #ffb300);
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    text-align: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 18px;
+    color: white;
+    box-shadow: 0 4px 16px rgba(255,179,0,0.35);
+    animation: pop 0.5s ease;
+  }
+  .patch-banner p { font-size: 11px; font-family: 'Nunito', sans-serif; font-weight: 700; margin-top: 2px; color: #fff3e0; }
+
+  @keyframes pop { 0%{transform:scale(0.8)} 70%{transform:scale(1.05)} 100%{transform:scale(1)} }
+
+  /* ---- FILTER TABS ---- */
+  .filter-tabs {
+    display: flex; gap: 7px;
+    overflow-x: auto; padding-bottom: 4px;
+    margin-bottom: 12px; scrollbar-width: none;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0; padding: 7px 13px;
+    border-radius: 99px; border: 2px solid #ddd;
+    background: white; font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 11px; cursor: pointer;
+    transition: all 0.18s; color: #555;
+    -webkit-user-select: none; user-select: none;
+  }
+  .tab.active, .tab:active { background: #2e7d32; border-color: #2e7d32; color: white; }
+
+  /* ---- GRID ---- */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+
+  .card {
+    background: white; border-radius: 15px;
+    padding: 12px 10px; cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.18s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: relative; user-select: none;
+    -webkit-user-select: none;
+    display: flex; flex-direction: column; gap: 5px;
+    active-scale: 0.96;
+  }
+  .card:active { transform: scale(0.96); }
+  .card.done { background: linear-gradient(135deg, #f1f8e9, #e8f5e9); border-color: #66bb6a; }
+  .card.done .card-num { background: #4caf50; color: white; }
+  .card.done .card-title { color: #2e7d32; }
+
+  .card-top { display: flex; align-items: center; gap: 6px; }
+  .card-num {
+    font-family: 'Fredoka One', cursive; font-size: 12px;
+    background: #f5f5f5; color: #999;
+    border-radius: 7px; width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s;
+  }
+  .card-emoji { font-size: 20px; }
+  .card-title { font-size: 11px; font-weight: 700; color: #333; line-height: 1.3; }
+  .card-tag {
+    display: inline-block; font-size: 9px; font-weight: 800;
+    padding: 2px 7px; border-radius: 99px; margin-top: 1px;
+    align-self: flex-start;
+  }
+  .check-mark { position: absolute; top: 7px; right: 8px; font-size: 14px; opacity: 0; transition: opacity 0.2s; }
+  .card.done .check-mark { opacity: 1; }
+
+  const tagColors = { 
+  fun:'tag-nature', 
+  adventure:'tag-adventure', 
+  skill:'tag-science', 
+  create:'tag-art' 
+};
+
+const tagLabels = { 
+  fun:'☀️ Classic Fun', 
+  adventure:'🗺️ Explore', 
+  skill:'🛠️ Skills', 
+  create:'🎨 Create' 
+};
+
+  /* ---- CONFETTI ---- */
+  .confetti-container { position: fixed; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:999; overflow:hidden; }
+  .confetti-piece { position:absolute; width:10px; height:10px; border-radius:2px; animation: confetti-fall 1.6s ease-out forwards; }
+  @keyframes confetti-fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+
+  /* ---- BOTTOM BAR ---- */
+  .bottom-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; border-top: 1px solid #eee;
+    padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    display: flex; gap: 8px; align-items: center;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.06); z-index: 50;
+  }
+  .bottom-bar .hint { flex:1; font-size: 11px; color: #aaa; font-weight: 600; }
+  .reset-btn {
+    background: #f5f5f5; border: none; border-radius: 99px;
+    padding: 8px 14px; font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 11px; cursor: pointer; color: #888;
+  }
+  .change-name-btn {
+    background: #e8f5e9; border: none; border-radius: 99px;
+    padding: 8px 14px; font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 11px; cursor: pointer; color: #2e7d32;
+  }
+
+  /* install tip */
+  .install-tip {
+    background: #e3f2fd; border-radius: 14px;
+    padding: 10px 14px; margin-bottom: 14px;
+    font-size: 11px; color: #1565c0; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .install-tip span { font-size: 18px; }
+</style>
+</head>
+<body>
+
+<div class="confetti-container" id="confetti"></div>
+
+<div class="hero">
+  <h1>🌿 Passport to Adventure 2026 🌿</h1>
+  <p>Earn at least 100 points to earn your Passport to Adventure Patch.</p>
+</div>
+
+<!-- Name Setup Screen -->
+<div id="name-setup">
+  <h2>👋 What's your name, Scout?</h2>
+  <input type="text" id="name-input" placeholder="Type your name here..." maxlength="30" autocomplete="off">
+  <button onclick="setName()">Let's Go! 🌿</button>
+</div>
+
+<!-- Main app (hidden until name set) -->
+<div id="main-app" style="display:none">
+
+  <div class="install-tip" id="install-tip">
+    <span>📱</span>
+    <div>Tap <strong>Share → Add to Home Screen</strong> to save this as an app!</div>
+    <button onclick="document.getElementById('install-tip').style.display='none'" style="background:none;border:none;font-size:16px;cursor:pointer;color:#1565c0;padding:0;margin-left:auto">✕</button>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-circle">
+      <svg viewBox="0 0 72 72">
+        <circle class="bg" cx="36" cy="36" r="28"/>
+        <circle class="fg" id="ring" cx="36" cy="36" r="28" stroke-dasharray="176" stroke-dashoffset="176"/>
+      </svg>
+      <div class="progress-text">
+        <span id="count">0</span>
+        <span>/ 50</span>
+      </div>
+    </div>
+    <div class="progress-info">
+      <div class="scout-name" id="scout-name-display"></div>
+      <h2 id="prog-label">0 activities done!</h2>
+      <p id="prog-sub">Tap a card to check it off ✅</p>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="patch-banner" class="patch-banner">
+    🏅 Patch Earned!
+    <p>You completed at least 100 points — tell your troop leader to get you your Passport to Adventure Patch!</p>
+  </div>
+
+ <div class="filter-tabs" id="tabs">
+  <button class="tab active" onclick="filter('all',this)">All</button>
+  <button class="tab" onclick="filter('fun',this)">☀️ Fun</button>
+  <button class="tab" onclick="filter('adventure',this)">🗺️ Explore</button>
+  <button class="tab" onclick="filter('skill',this)">🛠️ Skills</button>
+  <button class="tab" onclick="filter('create',this)">🎨 Create</button>
+</div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="bottom-bar" id="bottom-bar" style="display:none">
+  <div class="hint">💚 #gsoutdoors</div>
+  <button class="change-name-btn" onclick="changeName()">✏️ Name</button>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</div>
+
+<script>
+const activities = [
+  // Classic Summer Fun
+  { n:1, emoji:'🧺', title:'Have a picnic in a park or backyard', tag:'fun', pts:2 },
+  { n:2, emoji:'🏷️', title:'Play flashlight tag at dusk', tag:'fun', pts:3 },
+  { n:3, emoji:'🌅', title:'Watch the sunrise or sunset', tag:'fun', pts:3 },
+  { n:4, emoji:'🏊', title:'Go swimming (pool, lake, or splash pad)', tag:'fun', pts:4 },
+  { n:5, emoji:'🪁', title:'Make and fly a kite', tag:'fun', pts:4 },
+  { n:6, emoji:'🔥', title:'Roast s\'mores', tag:'fun', pts:6 },
+  { n:7, emoji:'⛺', title:'Camp overnight (backyard or campground)', tag:'fun', pts:8 },
+  { n:8, emoji:'🌟', title:'Go stargazing and identify constellations', tag:'fun', pts:9 },
+  { n:9, emoji:'📵', title:'Spend a full day screen-free', tag:'fun', pts:10 },
+
+  // Explore & Adventure
+  { n:10, emoji:'🌲', title:'Explore a new park or trail', tag:'adventure', pts:3 },
+  { n:11, emoji:'🔍', title:'Go on a nature scavenger hunt', tag:'adventure', pts:4 },
+  { n:12, emoji:'🚲', title:'Ride bikes on a greenway or trail', tag:'adventure', pts:4 },
+  { n:13, emoji:'🏛️', title:'Visit a historical site', tag:'adventure', pts:5 },
+  { n:14, emoji:'🗺️', title:'Try geocaching', tag:'adventure', pts:5 },
+  { n:15, emoji:'🛶', title:'Go kayaking or canoeing', tag:'adventure', pts:6 },
+  { n:16, emoji:'🥾', title:'Complete a hike over 3 miles', tag:'adventure', pts:9 },
+
+  // Learn a Skill
+  { n:17, emoji:'🍳', title:'Learn to cook a full meal', tag:'skill', pts:4 },
+  { n:18, emoji:'🧶', title:'Learn a new knot', tag:'skill', pts:5 },
+  { n:19, emoji:'🗺️', title:'Learn basic map-reading skills', tag:'skill', pts:6 },
+  { n:20, emoji:'🏅', title:'Earn part of a Girl Scout badge', tag:'skill', pts:9 },
+  { n:21, emoji:'🎨', title:'Master a completely new hobby', tag:'skill', pts:10 },
+
+  // Create & Express
+  { n:22, emoji:'📖', title:'Write a short story or poem', tag:'create', pts:3 },
+  { n:23, emoji:'📸', title:'Take creative photos of summer moments', tag:'create', pts:4 },
+  { n:24, emoji:'🎭', title:'Make a short video or skit', tag:'create', pts:5 },
+  { n:25, emoji:'🎨', title:'Create a piece of art to gift or donate', tag:'create', pts:8 }
+];
+
+const tagColors = { nature:'tag-nature', art:'tag-art', active:'tag-active', community:'tag-community', science:'tag-science', food:'tag-food', adventure:'tag-adventure' };
+const tagLabels = { nature:'🌿 Nature', art:'🎨 Art', active:'⚡ Active', community:'🤝 Community', science:'🔬 Science', food:'🍓 Food', adventure:'🏕️ Adventure' };
+
+function storageKey() { return 'gs_outdoors_2026_' + (getName()||'default'); }
+function nameKey() { return 'gs_outdoors_2026_name'; }
+function getName() { return localStorage.getItem(nameKey()) || ''; }
+function getDone() { return new Set(JSON.parse(localStorage.getItem(storageKey()) || '[]')); }
+function saveDone(done) { localStorage.setItem(storageKey(), JSON.stringify([...done])); }
+
+let done = new Set();
+
+function setName() {
+  const val = document.getElementById('name-input').value.trim();
+  if (!val) { document.getElementById('name-input').focus(); return; }
+  localStorage.setItem(nameKey(), val);
+  done = getDone();
+  document.getElementById('name-setup').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  document.getElementById('bottom-bar').style.display = 'flex';
+  document.getElementById('scout-name-display').textContent = '👧 ' + val + "'s Adventure";
+  updateProgress();
+  renderGrid();
+}
+
+function changeName() {
+  const n = prompt('Change name:', getName());
+  if (n && n.trim()) {
+    localStorage.setItem(nameKey(), n.trim());
+    done = getDone();
+    document.getElementById('scout-name-display').textContent = '👧 ' + n.trim() + "'s Adventure";
+    updateProgress();
+    renderGrid();
+  }
+}
+
+function toggle(n) {
+  const wasDone = done.has(n);
+  if (done.has(n)) done.delete(n); else done.add(n);
+  saveDone(done);
+  const card = document.querySelector(`[data-n="${n}"]`);
+  if (card) card.classList.toggle('done', done.has(n));
+  if (!wasDone && (done.size === 25 || done.size === 50)) launchConfetti();
+  updateProgress();
+  if (document.querySelector('.tab.active')?.textContent.includes('Done')) renderGrid();
+}
+
+function updateProgress() {
+  const n = done.size;
+  document.getElementById('count').textContent = n;
+  const circ = 176;
+  document.getElementById('ring').setAttribute('stroke-dashoffset', circ - circ * (n/50));
+  document.getElementById('prog-bar').style.width = (n/50*100) + '%';
+  document.getElementById('prog-label').textContent = n + ' activit' + (n===1?'y':'ies') + ' done!';
+  document.getElementById('prog-sub').textContent = n >= 25 ? '🏅 Patch earned! Keep going!' : (25-n) + ' more to earn your patch!';
+  document.getElementById('patch-banner').style.display = n >= 25 ? 'block' : 'none';
+}
+
+let currentFilter = 'all';
+function filter(tag, btn) {
+  currentFilter = tag;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  activities.forEach(a => {
+    if (currentFilter !== 'all' && currentFilter !== a.tag && !(currentFilter === 'done' && done.has(a.n))) return;
+    const card = document.createElement('div');
+    card.className = 'card' + (done.has(a.n) ? ' done' : '');
+    card.dataset.n = a.n;
+    card.onclick = () => toggle(a.n);
+    card.innerHTML = `
+      <div class="check-mark">✅</div>
+      <div class="card-top">
+        <div class="card-num">${a.n}</div>
+        <div class="card-emoji">${a.emoji}</div>
+      </div>
+      <div class="card-title">${a.title}</div>
+      <span class="card-tag ${tagColors[a.tag]}">${tagLabels[a.tag]}</span>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  const colors = ['#4caf50','#ffd54f','#ef5350','#42a5f5','#ab47bc','#ff7043','#26c6da'];
+  for (let i = 0; i < 70; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `left:${Math.random()*100}%;top:-10px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.8}s;animation-duration:${1.2+Math.random()*1}s;transform:rotate(${Math.random()*360}deg);border-radius:${Math.random()>0.5?'50%':'2px'}`;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 2500);
+  }
+}
+
+function resetAll() {
+  if (confirm('Clear all your checked activities? This cannot be undone.')) {
+    done.clear(); saveDone(done); updateProgress(); renderGrid();
+  }
+}
+
+// On load — check if name already saved
+window.onload = () => {
+  const saved = getName();
+  if (saved) {
+    document.getElementById('name-input').value = saved;
+    setName();
+  }
+  // Allow Enter key on name input
+  document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') setName(); });
+};
+</script>
+</body>
+</html>
