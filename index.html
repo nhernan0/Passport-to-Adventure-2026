@@ -7,7 +7,14 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Nunito', sans-serif; background: #fdfaf6; padding: 12px 12px 80px; }  
+  body { 
+  font-family: 'Nunito', sans-serif; 
+  /* This creates a gradient from top-left to bottom-right */
+  background: linear-gradient(135deg, #dcedc8, #e1bee7); 
+  /* This ensures the background covers the whole page even if content is short */
+  min-height: 100vh;
+  padding: 12px 12px 80px;
+  }
 
   .hero { background: #2e7d32; border-radius: 20px; padding: 20px; text-align: center; color: white; margin-bottom: 14px; }
   .hero h1 { font-family: 'Fredoka One', cursive; font-size: 20px; }
