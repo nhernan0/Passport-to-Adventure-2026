@@ -48,7 +48,7 @@
 <div id="name-setup">
   <h2>💚 Welcome, Girl Scout! 💚</h2>
   <input type="text" id="name-input" placeholder="Type your name here..." maxlength="30" autocomplete="off">
-  <button onclick="setName()">Let's Go! 🌿</button>
+  <button onclick="setName()">Let's Go! </button>
 </div>
 
 <div id="main-app" style="display:none">
@@ -65,7 +65,6 @@
 
 <script>
 const activities = [
- const activities = [
   // Classic Summer Fun
   { n: 1, emoji: '🍦', title: 'Eat a popsicle outside', pts: 1, tag: 'Classic Summer Fun' },
   { n: 2, emoji: '🧺', title: 'Have a picnic in a park or backyard', pts: 2, tag: 'Classic Summer Fun' },
@@ -224,12 +223,25 @@ function loadProgress() {
 function renderGrid() {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
-  activities.forEach(a => {
-    const card = document.createElement('div');
-    card.className = 'card' + (done.has(a.n) ? ' done' : '');
-    card.onclick = () => toggle(a.n);
-    card.innerHTML = `<div class="card-title">${a.title}</div><div class="card-pts">${a.pts} pts</div>`;
-    grid.appendChild(card);
+  const categories = [...new Set(activities.map(a => a.tag))];
+  
+  categories.forEach(cat => {
+    const header = document.createElement('h3');
+    header.className = 'category-header';
+    header.textContent = cat;
+    grid.appendChild(header);
+
+    activities.filter(a => a.tag === cat).forEach(a => {
+      const card = document.createElement('div');
+      card.className = 'card' + (done.has(a.n) ? ' done' : '');
+      card.onclick = () => toggle(a.n);
+      card.innerHTML = `
+        <div class="card-emoji">${a.emoji}</div>
+        <div class="card-title">${a.title}</div>
+        <div class="card-pts">${a.pts} pts</div>
+      `;
+      grid.appendChild(card);
+    });
   });
 }
 
@@ -238,4 +250,5 @@ window.onload = () => {
 };
 </script>
 </body>
+</html>
 </html>
