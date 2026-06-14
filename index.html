@@ -222,18 +222,35 @@ function renderTabs() {
 function renderGrid() {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
+  
+  // Filter activities
   const filtered = currentFilter === 'All' ? activities : activities.filter(a => a.tag === currentFilter);
   
-  filtered.forEach(a => {
-    const card = document.createElement('div');
-    card.className = 'card' + (done.has(a.n) ? ' done' : '');
-    card.onclick = () => toggle(a.n);
-    card.innerHTML = `
-      <div style="font-size: 20px">${a.emoji}</div>
-      <div class="card-title">${a.title}</div>
-      <div class="card-pts">${a.pts} pts</div>
-    `;
-    grid.appendChild(card);
+  // Group by tag
+  const groups = filtered.reduce((acc, a) => {
+    (acc[a.tag] = acc[a.tag] || []).push(a);
+    return acc;
+  }, {});
+
+  // Create headings and cards for each group
+  Object.keys(groups).forEach(tag => {
+    const sectionTitle = document.createElement('h3');
+    sectionTitle.style.gridColumn = "1 / -1"; // Makes title span full width
+    sectionTitle.style.margin = "15px 0 5px 0";
+    sectionTitle.textContent = tag;
+    grid.appendChild(sectionTitle);
+
+    groups[tag].forEach(a => {
+      const card = document.createElement('div');
+      card.className = 'card' + (done.has(a.n) ? ' done' : '');
+      card.onclick = () => toggle(a.n);
+      card.innerHTML = `
+        <div style="font-size: 20px">${a.emoji}</div>
+        <div class="card-title">${a.title}</div>
+        <div class="card-pts">${a.pts} pts</div>
+      `;
+      grid.appendChild(card);
+    });
   });
 }
 
