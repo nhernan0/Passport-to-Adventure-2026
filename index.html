@@ -30,15 +30,6 @@
   .card.done { border-color: #2e7d32; background: #f1f8e9; }
   .card-title { font-size: 11px; font-weight: 700; }
   .card-pts { font-size: 10px; color: #2e7d32; font-weight: 800; }
-  .category-header { 
-  grid-column: 1 / -1; 
-  font-family: 'Fredoka One', cursive;
-  color: #2e7d32; 
-  margin-top: 20px; 
-  margin-bottom: 5px;
-  border-bottom: 2px solid #e8f5e9;
-  padding-bottom: 5px;
-}
 </style>
 </head>
 <body>
@@ -180,8 +171,7 @@ const activities = [
 ];
 
 let done = new Set();
-let totalPoints = 0;
-let currentFilter = 'All';  
+let currentFilter = 'All';
 
 function setName() {
   const name = document.getElementById('name-input').value;
@@ -190,15 +180,13 @@ function setName() {
   document.getElementById('name-setup').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
   document.getElementById('scout-name').textContent = name;
-  renderTabs(); // Generate buttons
+  renderTabs();
   loadProgress();
 }
 
-  // New: Generate category buttons
 function renderTabs() {
   const tabs = document.getElementById('tabs');
   const categories = ['All', ...new Set(activities.map(a => a.tag))];
-  
   tabs.innerHTML = '';
   categories.forEach(cat => {
     const btn = document.createElement('button');
@@ -206,23 +194,17 @@ function renderTabs() {
     btn.textContent = cat;
     btn.onclick = () => {
       currentFilter = cat;
-      renderTabs(); // Re-render buttons to update "active" state
+      renderTabs();
       renderGrid();
     };
     tabs.appendChild(btn);
   });
 }
-  
-function filterActivities(list) {
-  if (currentFilter === 'All') return list;
-  return list.filter(a => a.tag === currentFilter);
-}
 
 function renderGrid() {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
-  
-  const filtered = filterActivities(activities);
+  const filtered = currentFilter === 'All' ? activities : activities.filter(a => a.tag === currentFilter);
   
   filtered.forEach(a => {
     const card = document.createElement('div');
@@ -245,17 +227,13 @@ function toggle(n) {
 }
 
 function calculatePoints() {
-  totalPoints = 0;
+  let total = 0;
   done.forEach(n => {
     const act = activities.find(a => a.n === n);
-    if(act) totalPoints += act.pts;
+    if(act) total += act.pts;
   });
-  document.getElementById('total-pts').textContent = 'Total Points: ' + totalPoints;
-  document.getElementById('prog-bar').style.width = Math.min(totalPoints, 100) + '%';
-  if(totalPoints >= 100 && !localStorage.getItem('milestone_hit')) {
-    alert('Congratulations! You reached 100 points!');
-    localStorage.setItem('milestone_hit', 'true');
-  }
+  document.getElementById('total-pts').textContent = 'Total Points: ' + total;
+  document.getElementById('prog-bar').style.width = Math.min(total, 100) + '%';
 }
 
 function loadProgress() {
@@ -265,35 +243,7 @@ function loadProgress() {
   renderGrid();
 }
 
-function renderGrid() {
-  const grid = document.getElementById('grid');
-  grid.innerHTML = '';
-  const categories = [...new Set(activities.map(a => a.tag))];
-  
-  categories.forEach(cat => {
-    const header = document.createElement('h3');
-    header.className = 'category-header';
-    header.textContent = cat;
-    grid.appendChild(header);
-
-    activities.filter(a => a.tag === cat).forEach(a => {
-      const card = document.createElement('div');
-      card.className = 'card' + (done.has(a.n) ? ' done' : '');
-      card.onclick = () => toggle(a.n);
-      card.innerHTML = `
-        <div class="card-emoji">${a.emoji}</div>
-        <div class="card-title">${a.title}</div>
-        <div class="card-pts">${a.pts} pts</div>
-      `;
-      grid.appendChild(card);
-    });
-  });
-}
-
-window.onload = () => {
-  if(localStorage.getItem('scout_name')) setName();
-};
+window.onload = () => { if(localStorage.getItem('scout_name')) setName(); };
 </script>
 </body>
-</html>
 </html>
