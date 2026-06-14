@@ -194,30 +194,25 @@ function setName() {
   loadProgress();
 }
 
-  function renderTabs() {
+  // New: Generate category buttons
+function renderTabs() {
   const tabs = document.getElementById('tabs');
-  // Get unique tags, but keep 'All' at the start
   const categories = ['All', ...new Set(activities.map(a => a.tag))];
   
   tabs.innerHTML = '';
   categories.forEach(cat => {
     const btn = document.createElement('button');
-    
-    // Map the category to the class name
-    const colorClass = categoryMap[cat] || ''; 
-    
-    // Apply classes: base 'tab' + the color + 'active' if selected
-    btn.className = `tab ${colorClass} ${currentFilter === cat ? 'active' : ''}`;
+    btn.className = 'tab' + (currentFilter === cat ? ' active' : '');
     btn.textContent = cat;
-    
     btn.onclick = () => {
       currentFilter = cat;
-      renderTabs(); // Redraw tabs to update which one is active
-      renderGrid(); // Redraw grid to filter items
+      renderTabs(); // Re-render buttons to update "active" state
+      renderGrid();
     };
     tabs.appendChild(btn);
   });
 }
+  
 function filterActivities(list) {
   if (currentFilter === 'All') return list;
   return list.filter(a => a.tag === currentFilter);
