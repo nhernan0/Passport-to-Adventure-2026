@@ -188,15 +188,28 @@ const activities = [
 let done = new Set();
 let currentFilter = 'All';
 
-function setName() {
-  const name = document.getElementById('name-input').value;
-  if (!name) return;
-  localStorage.setItem('scout_name', name);
+  function setName() {
+  const val = document.getElementById('name-input').value.trim();
+  if (!val) { document.getElementById('name-input').focus(); return; }
+  localStorage.setItem(nameKey(), val);
+  done = getDone();
   document.getElementById('name-setup').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
-  document.getElementById('scout-name').textContent = name;
-  renderTabs();
-  loadProgress();
+  document.getElementById('bottom-bar').style.display = 'flex';
+  document.getElementById('scout-name-display').textContent = '👧 ' + val + "'s Adventure";
+  updateProgress();
+  renderGrid();
+}
+
+function changeName() {
+  const n = prompt('Change name:', getName());
+  if (n && n.trim()) {
+    localStorage.setItem(nameKey(), n.trim());
+    done = getDone();
+    document.getElementById('scout-name-display').textContent = '👧 ' + n.trim() + "'s Adventure";
+    updateProgress();
+    renderGrid();
+  }
 }
 
 function renderTabs() {
