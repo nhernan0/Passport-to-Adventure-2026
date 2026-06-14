@@ -23,9 +23,17 @@
   
   #main-app { display: none; }
   
+  .install-tip {
+    background: #e3f2fd; border-radius: 14px; padding: 12px; margin-bottom: 14px;
+    font-size: 13px; color: #1565c0; font-weight: 700;
+    display: none; /* Hidden by default */
+    align-items: center; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .install-tip span { font-size: 20px; }
+  .install-tip button { background: none; border: none; font-size: 16px; cursor: pointer; color: #1565c0; margin-left: auto; }
+  
   .progress-section { background: white; border-radius: 18px; padding: 15px; margin-bottom: 14px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
   
-  /* Track Wheel Styles */
   .progress-circle { width: 70px; height: 70px; flex-shrink: 0; }
   .progress-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
   
@@ -55,13 +63,13 @@
   <button onclick="setName()">Let's Start!</button>
 </div>
 
-<div class="install-tip" id="install-tip">
-  <span>📱</span>
-  <div>Tap <strong>Share → Add to Home Screen</strong> to save this as an app!</div>
-  <button onclick="document.getElementById('install-tip').style.display='none'">✕</button>
-</div>
-
 <div id="main-app">
+  <div class="install-tip" id="install-tip">
+    <span>📱</span>
+    <div>Tap <strong>Share → Add to Home Screen</strong> to save as an app!</div>
+    <button onclick="hideTip()">✕</button>
+  </div>
+
   <h2 id="scout-name-display" style="text-align: center; margin-bottom: 10px;"></h2>
   
   <div class="progress-section">
@@ -203,6 +211,18 @@ function getDone() {
     return saved ? new Set(JSON.parse(saved)) : new Set();
 }
 
+function checkInstallStatus() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+  if (isIOS && !isStandalone) {
+    document.getElementById('install-tip').style.display = 'flex';
+  }
+}
+
+function hideTip() {
+  document.getElementById('install-tip').style.display = 'none';
+}
+
 function setName() {
   const input = document.getElementById('name-input');
   const val = input.value.trim() || getName();
@@ -216,6 +236,7 @@ function setName() {
   renderTabs();
   calculatePoints();
   renderGrid();
+  checkInstallStatus();
 }
 
 function changeName() {
