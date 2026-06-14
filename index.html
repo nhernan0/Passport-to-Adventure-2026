@@ -8,12 +8,10 @@
   @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { 
-  font-family: 'Nunito', sans-serif; 
-  /* This creates a gradient from top-left to bottom-right */
-  background: linear-gradient(135deg, #dcedc8, #e1bee7); 
-  /* This ensures the background covers the whole page even if content is short */
-  min-height: 100vh;
-  padding: 12px 12px 80px;
+    font-family: 'Nunito', sans-serif; 
+    background: linear-gradient(135deg, #dcedc8, #e1bee7); 
+    min-height: 100vh;
+    padding: 12px 12px 80px;
   }
 
   .hero { background: #2e7d32; border-radius: 20px; padding: 20px; text-align: center; color: white; margin-bottom: 14px; }
@@ -25,15 +23,12 @@
   
   #main-app { display: none; }
   
-  .install-tip {
-    background: #e3f2fd; border-radius: 14px; padding: 10px 14px; margin-bottom: 14px;
-    font-size: 11px; color: #1565c0; font-weight: 700;
-    display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
-  .install-tip span { font-size: 18px; }
-  .install-tip button { background: none; border: none; font-size: 16px; cursor: pointer; color: #1565c0; padding: 0; margin-left: auto; }
-  
   .progress-section { background: white; border-radius: 18px; padding: 15px; margin-bottom: 14px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  
+  /* Track Wheel Styles */
+  .progress-circle { width: 70px; height: 70px; flex-shrink: 0; }
+  .progress-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  
   .progress-info { flex: 1; }
   .progress-bar-wrap { background: #eee; height: 12px; border-radius: 6px; margin-top: 8px; }
   .progress-bar-fill { height: 100%; background: #2e7d32; border-radius: 6px; width: 0%; transition: width 0.3s; }
@@ -43,6 +38,7 @@
   .tab.active { background: #2e7d32; color: white; }
   
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid h3 { grid-column: 1 / -1; font-family: 'Fredoka One', cursive; color: #2e7d32; margin: 15px 0 5px 0; }
   .card { background: white; border-radius: 12px; padding: 10px; border: 2px solid #eee; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
   .card.done { border-color: #2e7d32; background: #f1f8e9; }
   .card-title { font-size: 11px; font-weight: 700; }
@@ -52,7 +48,6 @@
 <body>
 
 <div class="hero"><h1>🧳 Passport to Adventure 2026 🧳</h1></div>
-<p>Complete 100 points to earn your patch! Contact your troop leader for your patch.</p>
 
 <div id="name-setup">
   <h2>💚 Welcome, Girl Scout! 💚</h2>
@@ -61,21 +56,28 @@
 </div>
 
 <div id="main-app">
-  <div class="install-tip" id="install-tip">
-    <span>📱</span>
-    <div>Tap <strong>Share → Add to Home Screen</strong> to save this as an app!</div>
-    <button onclick="document.getElementById('install-tip').style.display='none'">✕</button>
-  </div>
+  <h2 id="scout-name-display" style="text-align: center; margin-bottom: 10px;"></h2>
   
   <div class="progress-section">
+    <div class="progress-circle">
+      <svg viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r="28" style="stroke: #eee; fill: none; stroke-width: 6;"/>
+        <circle id="prog-circle" cx="36" cy="36" r="28" style="stroke: #2e7d32; fill: none; stroke-width: 6; stroke-dasharray: 176; stroke-dashoffset: 176; transition: stroke-dashoffset 0.5s ease;"/>
+      </svg>
+    </div>
     <div class="progress-info">
-      <h2 id="scout-name">Scout</h2>
-      <p id="total-pts">Total Points Earned So Far: 0</p>
+      <p id="total-pts">Total Points: 0</p>
+      <p id="points-left" style="font-size: 12px; color: #2e7d32; font-weight: 800;"></p>
       <div class="progress-bar-wrap"><div id="prog-bar" class="progress-bar-fill"></div></div>
     </div>
   </div>
+  
   <div class="filter-tabs" id="tabs"></div>
   <div class="grid" id="grid"></div>
+  
+  <div id="bottom-bar" style="display:flex; justify-content: center; margin-top: 20px;">
+    <button onclick="changeName()" style="background:none; border:none; text-decoration:underline; cursor:pointer;">Change Name</button>
+  </div>
 </div>
 
 <script>
@@ -188,17 +190,36 @@ const activities = [
 let done = new Set();
 let currentFilter = 'All';
 
+function getName() { return localStorage.getItem('scout_name') || ''; }
+function nameKey() { return 'scout_name'; }
+function getDone() { 
+    const saved = localStorage.getItem('done_activities');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+}
+
 function setName() {
-  const name = document.getElementById('name-input').value;
-  if (!name) return;
-  localStorage.setItem('scout_name', name);
+  const input = document.getElementById('name-input');
+  const val = input.value.trim() || getName();
+  if (!val) return;
+  
+  localStorage.setItem(nameKey(), val);
+  done = getDone();
   document.getElementById('name-setup').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
-  document.getElementById('scout-name').textContent = name;
+  document.getElementById('scout-name-display').textContent = val + "'s Adventure";
   renderTabs();
-  loadProgress();
+  calculatePoints();
+  renderGrid();
 }
-  
+
+function changeName() {
+  const n = prompt('Change name:', getName());
+  if (n && n.trim()) {
+    localStorage.setItem(nameKey(), n.trim());
+    document.getElementById('scout-name-display').textContent = n.trim() + "'s Adventure";
+  }
+}
+
 function renderTabs() {
   const tabs = document.getElementById('tabs');
   const categories = ['All', ...new Set(activities.map(a => a.tag))];
@@ -207,11 +228,7 @@ function renderTabs() {
     const btn = document.createElement('button');
     btn.className = 'tab' + (currentFilter === cat ? ' active' : '');
     btn.textContent = cat;
-    btn.onclick = () => {
-      currentFilter = cat;
-      renderTabs();
-      renderGrid();
-    };
+    btn.onclick = () => { currentFilter = cat; renderTabs(); renderGrid(); };
     tabs.appendChild(btn);
   });
 }
@@ -219,30 +236,18 @@ function renderTabs() {
 function renderGrid() {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
-  
   const filtered = currentFilter === 'All' ? activities : activities.filter(a => a.tag === currentFilter);
-  
-  const groups = filtered.reduce((acc, a) => {
-    (acc[a.tag] = acc[a.tag] || []).push(a);
-    return acc;
-  }, {});
+  const groups = filtered.reduce((acc, a) => { (acc[a.tag] = acc[a.tag] || []).push(a); return acc; }, {});
 
   Object.keys(groups).forEach(tag => {
     const sectionTitle = document.createElement('h3');
-    sectionTitle.style.gridColumn = "1 / -1";
-    sectionTitle.style.margin = "15px 0 5px 0";
     sectionTitle.textContent = tag;
     grid.appendChild(sectionTitle);
-
     groups[tag].forEach(a => {
       const card = document.createElement('div');
       card.className = 'card' + (done.has(a.n) ? ' done' : '');
       card.onclick = () => toggle(a.n);
-      card.innerHTML = `
-        <div style="font-size: 20px">${a.emoji}</div>
-        <div class="card-title">${a.title}</div>
-        <div class="card-pts">${a.pts} pts</div>
-      `;
+      card.innerHTML = `<div style="font-size: 20px">${a.emoji}</div><div class="card-title">${a.title}</div><div class="card-pts">${a.pts} pts</div>`;
       grid.appendChild(card);
     });
   });
@@ -257,22 +262,18 @@ function toggle(n) {
 
 function calculatePoints() {
   let total = 0;
-  done.forEach(n => {
-    const act = activities.find(a => a.n === n);
-    if(act) total += act.pts;
-  });
-  document.getElementById('total-pts').textContent = 'Total Points Earned So Far: ' + total;
-  document.getElementById('prog-bar').style.width = Math.min(total, 100) + '%';
+  done.forEach(n => { const act = activities.find(a => a.n === n); if(act) total += act.pts; });
+  
+  const points = Math.min(total, 100);
+  document.getElementById('total-pts').textContent = 'Total Points: ' + total;
+  document.getElementById('points-left').textContent = total >= 100 ? 'Goal Reached! 🎉' : (100 - total) + ' pts until your patch!';
+  document.getElementById('prog-bar').style.width = points + '%';
+  
+  const circle = document.getElementById('prog-circle');
+  circle.style.strokeDashoffset = 176 - (points / 100 * 176);
 }
 
-function loadProgress() {
-  const saved = localStorage.getItem('done_activities');
-  if(saved) done = new Set(JSON.parse(saved));
-  calculatePoints();
-  renderGrid();
-}
-
-window.onload = () => { if(localStorage.getItem('scout_name')) setName(); };
+window.onload = () => { if(getName()) setName(); };
 </script>
 </body>
 </html>
