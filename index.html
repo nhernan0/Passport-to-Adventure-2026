@@ -261,7 +261,7 @@ function calculatePoints() {
     const act = activities.find(a => a.n === n);
     if(act) total += act.pts;
   });
-  document.getElementById('total-pts').textContent = 'Total Points: ' + total;
+  document.getElementById('total-pts').textContent = 'Total Points Earned So Far: ' + total;
   document.getElementById('prog-bar').style.width = Math.min(total, 100) + '%';
 }
 
