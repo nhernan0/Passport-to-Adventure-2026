@@ -30,6 +30,18 @@
   .progress-info { flex: 1; }
   .progress-bar-wrap { background: #eee; height: 12px; border-radius: 6px; margin-top: 8px; }
   .progress-bar-fill { height: 100%; background: #2e7d32; border-radius: 6px; width: 0%; transition: width 0.3s; }
+
+  .progress-container { display: flex; align-items: center; gap: 20px; }
+  .progress-circle { width: 70px; height: 70px; position: relative; }
+  .progress-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .progress-circle circle { fill: none; stroke-width: 6; }
+  .circle-bg { stroke: #eee; }
+  .circle-fg { 
+    stroke: #2e7d32; 
+    stroke-dasharray: 176; /* Circumference of circle with r=28 */
+    stroke-dashoffset: 176; 
+    transition: stroke-dashoffset 0.5s ease;
+}
   
   .filter-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 5px; }
   .tab { flex-shrink: 0; padding: 8px 16px; border-radius: 20px; border: none; background: #e0e0e0; font-weight: bold; cursor: pointer; }
@@ -62,14 +74,19 @@
   </div>
   
   <div class="progress-section">
+  <div class="progress-container">
+    <div class="progress-circle">
+      <svg viewBox="0 0 72 72">
+        <circle class="circle-bg" cx="36" cy="36" r="28"/>
+        <circle class="circle-fg" id="prog-circle" cx="36" cy="36" r="28"/>
+      </svg>
+    </div>
     <div class="progress-info">
       <h2 id="scout-name">Scout</h2>
       <p id="total-pts">Total Points: 0</p>
       <div class="progress-bar-wrap"><div id="prog-bar" class="progress-bar-fill"></div></div>
     </div>
   </div>
-  <div class="filter-tabs" id="tabs"></div>
-  <div class="grid" id="grid"></div>
 </div>
 
 <script>
@@ -267,8 +284,18 @@ function calculatePoints() {
     const act = activities.find(a => a.n === n);
     if(act) total += act.pts;
   });
+  
+  const points = Math.min(total, 100);
+  
+  // Update Bar
   document.getElementById('total-pts').textContent = 'Total Points: ' + total;
-  document.getElementById('prog-bar').style.width = Math.min(total, 100) + '%';
+  document.getElementById('prog-bar').style.width = points + '%';
+  
+  // Update Circle
+  const circle = document.getElementById('prog-circle');
+  const circumference = 176;
+  const offset = circumference - (points / 100 * circumference);
+  circle.style.strokeDashoffset = offset;
 }
 
 function loadProgress() {
