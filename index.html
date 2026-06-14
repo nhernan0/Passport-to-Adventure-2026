@@ -48,7 +48,7 @@
 <div id="name-setup">
   <h2>💚 Welcome, Girl Scout! 💚</h2>
   <input type="text" id="name-input" placeholder="Type your name here..." maxlength="30" autocomplete="off">
-  <button onclick="setName()">Let's Go! </button>
+  <button onclick="setName()">Let's Start! </button>
 </div>
 
 <div id="main-app" style="display:none">
@@ -181,6 +181,7 @@ const activities = [
 
 let done = new Set();
 let totalPoints = 0;
+let currentFilter = 'All';  
 
 function setName() {
   const name = document.getElementById('name-input').value;
@@ -189,7 +190,51 @@ function setName() {
   document.getElementById('name-setup').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
   document.getElementById('scout-name').textContent = name;
+  renderTabs(); // Generate buttons
   loadProgress();
+}
+
+  // New: Generate category buttons
+function renderTabs() {
+  const tabs = document.getElementById('tabs');
+  const categories = ['All', ...new Set(activities.map(a => a.tag))];
+  
+  tabs.innerHTML = '';
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (currentFilter === cat ? ' active' : '');
+    btn.textContent = cat;
+    btn.onclick = () => {
+      currentFilter = cat;
+      renderTabs(); // Re-render buttons to update "active" state
+      renderGrid();
+    };
+    tabs.appendChild(btn);
+  });
+}
+
+function filterActivities(list) {
+  if (currentFilter === 'All') return list;
+  return list.filter(a => a.tag === currentFilter);
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  
+  const filtered = filterActivities(activities);
+  
+  filtered.forEach(a => {
+    const card = document.createElement('div');
+    card.className = 'card' + (done.has(a.n) ? ' done' : '');
+    card.onclick = () => toggle(a.n);
+    card.innerHTML = `
+      <div style="font-size: 20px">${a.emoji}</div>
+      <div class="card-title">${a.title}</div>
+      <div class="card-pts">${a.pts} pts</div>
+    `;
+    grid.appendChild(card);
+  });
 }
 
 function toggle(n) {
