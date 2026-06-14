@@ -45,7 +45,7 @@
 <div id="main-app" style="display:none">
   <div class="progress-section">
     <div class="progress-info">
-      <h2 id="scout-name">Scout</h2>
+      <h2 id="scout-name">Girl Scout</h2>
       <p id="total-pts">Total Points: 0</p>
       <div class="progress-bar-wrap"><div id="prog-bar" class="progress-bar-fill"></div></div>
     </div>
@@ -54,6 +54,40 @@
   <div class="grid" id="grid"></div>
 </div>
 
+  <div class="install-tip" id="install-tip">
+    <span>📱</span>
+    <div>Tap <strong>Share → Add to Home Screen</strong> to save this as an app!</div>
+    <button onclick="document.getElementById('install-tip').style.display='none'" style="background:none;border:none;font-size:16px;cursor:pointer;color:#1565c0;padding:0;margin-left:auto">✕</button>
+  </div>  
+
+  <div id="patch-banner" class="patch-banner">
+    🏅 Patch Earned!
+    <p>You earned 100 points — contact your troop leader for your fun patch!</p>
+  </div>
+
+  <div class="filter-tabs" id="tabs">
+    <button class="tab active" onclick="filter('all',this)">All </button>
+    <button class="tab" onclick="filter('classic summer fun',this)">Classic Summer Fun</button>
+    <button class="tab" onclick="filter('explore and adventure',this)">Explore and Adventure</button>
+    <button class="tab" onclick="filter('learn a skill',this)">Learn a Skill</button>
+    <button class="tab" onclick="filter('create and express',this)">Create and Express</button>
+    <button class="tab" onclick="filter('service and leadership',this)">Service and Leadership</button>
+    <button class="tab" onclick="filter('family and friendship fun',this)">Family and Friendship Fun</button>
+    <button class="tab" onclick="filter('chill and reflect',this)">Chill and Reflect</button>
+    <button class="tab" onclick="filter('big adventures and challenges',this)">Big Adventures and Challenges</button>
+    <button class="tab" onclick="filter('bonus and make your own',this)">Bonus and Make Your Own</button>
+    <button class="tab" onclick="filter('done',this)">✅ Done</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="bottom-bar" id="bottom-bar" style="display:none">
+  <div class="hint">💚 #passporttoadventure</div>
+  <button class="change-name-btn" onclick="changeName()">✏️ Name</button>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</div>
+  
 <script>
 const activities = [
   // Classic Summer Fun
