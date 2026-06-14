@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Passport to Adventure 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: #fdfaf6; padding: 12px 12px 80px; }
+  
+  .hero { background: #2e7d32; border-radius: 20px; padding: 20px; text-align: center; color: white; margin-bottom: 14px; }
+  .hero h1 { font-family: 'Fredoka One', cursive; font-size: 20px; }
+  
+  #name-setup { background: white; border-radius: 18px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  #name-setup input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; margin-bottom: 10px; }
+  #name-setup button { background: #2e7d32; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-family: 'Fredoka One', cursive; cursor: pointer; }
+  
+  .progress-section { background: white; border-radius: 18px; padding: 15px; margin-bottom: 14px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .progress-info { flex: 1; }
+  .progress-bar-wrap { background: #eee; height: 12px; border-radius: 6px; margin-top: 8px; }
+  .progress-bar-fill { height: 100%; background: #2e7d32; border-radius: 6px; width: 0%; transition: width 0.3s; }
+  
+  .filter-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 5px; }
+  .tab { flex-shrink: 0; padding: 8px 16px; border-radius: 20px; border: none; background: #e0e0e0; font-weight: bold; cursor: pointer; }
+  .tab.active { background: #2e7d32; color: white; }
+  
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .card { background: white; border-radius: 12px; padding: 10px; border: 2px solid #eee; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
+  .card.done { border-color: #2e7d32; background: #f1f8e9; }
+  .card-title { font-size: 11px; font-weight: 700; }
+  .card-pts { font-size: 10px; color: #2e7d32; font-weight: 800; }
+</style>
+</head>
+<body>
 
+<div class="hero"><h1>Passport to Adventure 2026</h1></div>
+
+<div id="name-setup">
+  <h2>Welcome, Scout!</h2>
+  <input type="text" id="name-input" placeholder="Enter your name">
+  <button onclick="setName()">Let's Start</button>
+</div>
+
+<div id="main-app" style="display:none">
+  <div class="progress-section">
+    <div class="progress-info">
+      <h2 id="scout-name">Scout</h2>
+      <p id="total-pts">Total Points: 0</p>
+      <div class="progress-bar-wrap"><div id="prog-bar" class="progress-bar-fill"></div></div>
+    </div>
+  </div>
+  <div class="filter-tabs" id="tabs"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+// UPDATE YOUR ACTIVITIES AND POINTS HERE
+const activities = [
+  { n:1, title:'Activity Name Here', pts:10, tag:'Category1' },
+  { n:2, title:'Another Activity', pts:20, tag:'Category2' }
+  // Add all your PDF activities here following this format
+];
+
+let done = new Set();
+let totalPoints = 0;
+
+function setName() {
+  const name = document.getElementById('name-input').value;
+  if (!name) return;
+  localStorage.setItem('scout_name', name);
+  document.getElementById('name-setup').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  document.getElementById('scout-name').textContent = name;
+  loadProgress();
+}
+
+function toggle(n) {
+  if (done.has(n)) done.delete(n); else done.add(n);
+  localStorage.setItem('done_activities', JSON.stringify([...done]));
+  calculatePoints();
+  renderGrid();
+}
+
+function calculatePoints() {
+  totalPoints = 0;
+  done.forEach(n => {
+    const act = activities.find(a => a.n === n);
+    if(act) totalPoints += act.pts;
+  });
+  document.getElementById('total-pts').textContent = 'Total Points: ' + totalPoints;
+  document.getElementById('prog-bar').style.width = Math.min(totalPoints, 100) + '%';
+  if(totalPoints >= 100 && !localStorage.getItem('milestone_hit')) {
+    alert('Congratulations! You reached 100 points!');
+    localStorage.setItem('milestone_hit', 'true');
+  }
+}
+
+function loadProgress() {
+  const saved = localStorage.getItem('done_activities');
+  if(saved) done = new Set(JSON.parse(saved));
+  calculatePoints();
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  activities.forEach(a => {
+    const card = document.createElement('div');
+    card.className = 'card' + (done.has(a.n) ? ' done' : '');
+    card.onclick = () => toggle(a.n);
+    card.innerHTML = `<div class="card-title">${a.title}</div><div class="card-pts">${a.pts} pts</div>`;
+    grid.appendChild(card);
+  });
+}
+
+window.onload = () => {
+  if(localStorage.getItem('scout_name')) setName();
+};
+</script>
+</body>
+</html>
