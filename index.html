@@ -21,26 +21,9 @@
   .progress-bar-wrap { background: #eee; height: 12px; border-radius: 6px; margin-top: 8px; }
   .progress-bar-fill { height: 100%; background: #2e7d32; border-radius: 6px; width: 0%; transition: width 0.3s; }
   
-/* Updated Tab Styles */
   .filter-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 5px; }
-  .tab { 
-    flex-shrink: 0; padding: 8px 16px; border-radius: 20px; 
-    border: 2px solid #ddd; font-weight: 800; cursor: pointer; 
-    background: white; color: #555;
-  }
-  
-  /* These force the colors to apply when the button has the 'active' class */
-  .tab.active { border: none !important; color: white !important; }
-  
-  .tab-classic.active { background: #e53935 !important; } /* Red */
-  .tab-explore.active { background: #fb8c00 !important; } /* Orange */
-  .tab-skill.active   { background: #fdd835 !important; color: #333 !important; } /* Yellow */
-  .tab-create.active  { background: #4caf50 !important; } /* Green */
-  .tab-service.active { background: #00897b !important; } /* Teal */
-  .tab-family.active  { background: #1e88e5 !important; } /* Blue */
-  .tab-chill.active   { background: #3949ab !important; } /* Indigo */
-  .tab-big.active     { background: #8e24aa !important; } /* Violet */
-  .tab-bonus.active   { background: #d81b60 !important; } /* Pink */
+  .tab { flex-shrink: 0; padding: 8px 16px; border-radius: 20px; border: none; background: #e0e0e0; font-weight: bold; cursor: pointer; }
+  .tab.active { background: #2e7d32; color: white; }
   
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .card { background: white; border-radius: 12px; padding: 10px; border: 2px solid #eee; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
