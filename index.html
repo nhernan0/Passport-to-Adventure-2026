@@ -28,28 +28,16 @@
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .card { background: white; border-radius: 12px; padding: 10px; border: 2px solid #eee; display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
   .card.done { border-color: #2e7d32; background: #f1f8e9; }
-    .card-emoji { font-size: 20px; }
-  .card-title { font-size: 11px; font-weight: 700; color: #333; line-height: 1.3; }
-  .card-tag {
-    display: inline-block; font-size: 9px; font-weight: 800;
-    padding: 2px 7px; border-radius: 99px; margin-top: 1px;
-    align-self: flex-start;
-  }
-  .check-mark { position: absolute; top: 7px; right: 8px; font-size: 14px; opacity: 0; transition: opacity 0.2s; }
-  .card.done .check-mark { opacity: 1; }
-
-  .tag-Classic Summer Fun    { background: #e8f5e9; color: #2e7d32; }
-  .tag-Explore & Adventure       { background: #fce4ec; color: #c2185b; }
   .card-title { font-size: 11px; font-weight: 700; }
   .card-pts { font-size: 10px; color: #2e7d32; font-weight: 800; }
 </style>
 </head>
 <body>
 
-<div class="hero"><h1> 🐚 ☀️ 🤿 🧬 🎶 🎬 Passport to Adventure 2026 ✏️ ⛺ 🎨 🎒 🔦 📚 </h1></div>
+<div class="hero"><h1>Passport to Adventure 2026</h1></div>
 
 <div id="name-setup">
-  <h2>💚 Welcome, Girl Scout 💚!</h2>
+  <h2>Welcome, Scout!</h2>
   <input type="text" id="name-input" placeholder="Enter your name">
   <button onclick="setName()">Let's Start</button>
 </div>
@@ -57,7 +45,7 @@
 <div id="main-app" style="display:none">
   <div class="progress-section">
     <div class="progress-info">
-      <h2 id="scout-name">Girl Scout</h2>
+      <h2 id="scout-name">Scout</h2>
       <p id="total-pts">Total Points: 0</p>
       <div class="progress-bar-wrap"><div id="prog-bar" class="progress-bar-fill"></div></div>
     </div>
@@ -66,154 +54,122 @@
   <div class="grid" id="grid"></div>
 </div>
 
-  <div class="install-tip" id="install-tip">
-    <span>📱</span>
-    <div>Tap <strong>Share → Add to Home Screen</strong> to save this as an app!</div>
-    <button onclick="document.getElementById('install-tip').style.display='none'" style="background:none;border:none;font-size:16px;cursor:pointer;color:#1565c0;padding:0;margin-left:auto">✕</button>
-  </div>  
-
-  <div id="patch-banner" class="patch-banner">
-    🏅 Patch Earned!
-    <p>You earned 100 points — contact your troop leader for your fun patch!</p>
-  </div>
-
-  <div class="filter-tabs" id="tabs">
-    <button class="tab active" onclick="filter('all',this)">All </button>
-    <button class="tab" onclick="filter('Classic Summer Fun',this)">Classic Summer Fun</button>
-    <button class="tab" onclick="filter('Explore & Adventure',this)">Explore & Adventure</button>
-    <button class="tab" onclick="filter('Learn a Skill',this)">Learn a Skill</button>
-    <button class="tab" onclick="filter('Create & Express',this)">Create & Express</button>
-    <button class="tab" onclick="filter('Service & Leadership',this)">Service & Leadership</button>
-    <button class="tab" onclick="filter('Family & Friendship Fun',this)">Family & Friendship Fun</button>
-    <button class="tab" onclick="filter('Chill & Reflect',this)">Chill & Reflect</button>
-    <button class="tab" onclick="filter('Big Adventures and Challenges',this)">Big Adventures & Challenges</button>
-    <button class="tab" onclick="filter('Bonus & Make Your Own',this)">Bonus & Make Your Own</button>
-    <button class="tab" onclick="filter('Done',this)">✅ Done</button>
-  </div>
-
-  <div class="grid" id="grid"></div>
-</div>
-
-<div class="bottom-bar" id="bottom-bar" style="display:none">
-  <div class="hint">💚 #passporttoadventure</div>
-  <button class="change-name-btn" onclick="changeName()">✏️ Name</button>
-  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
-</div>
-  
 <script>
+// UPDATE YOUR ACTIVITIES AND POINTS HERE
 const activities = [
+ const activities = [
   // Classic Summer Fun
-  { n:1, emoji:'🍦', title: 'Eat a popsicle outside', pts: 1, tag: 'Classic Summer Fun' },
-  { n:2, emoji:'🧺', title: 'Have a picnic in a park or backyard', pts: 2, tag: 'Classic Summer Fun' },
-  { n:3, emoji:'🔦', title: 'Play flashlight tag at dusk', pts: 3, tag: 'Classic Summer Fun' },
-  { n:4, emoji:'🌅', title: 'Watch the sunrise or sunset', pts: 3, tag: 'Classic Summer Fun' },
-  { n:5, emoji:'🏊', title: 'Go swimming (pool, lake or splash pad)', pts: 4, tag: 'Classic Summer Fun' },
-  { n:6, emoji:'🪁', title: 'Make and fly a kite', pts: 4, tag: 'Classic Summer Fun' },
-  { n:7, emoji:'✨', title: 'Catch fireflies (observe & release)', pts: 5, tag: 'Classic Summer Fun' },
-  { n:8, emoji:'🍋', title: 'Make homemade lemonade', pts: 5, tag: 'Classic Summer Fun' },
-  { n:9, emoji:'🏰', title: 'Build a blanket or pillow fort', pts: 6, tag: 'Classic Summer Fun' },
-  { n:10, emoji:'🔥', title: 'Roast s\'mores', pts: 6, tag: 'Classic Summer Fun' },
-  { n:11, emoji:'🎡', title: 'Visit a local fair or festival', pts: 7, tag: 'Classic Summer Fun' },
-  { n:12, emoji:'⛺', title: 'Camp overnight (backyard or campground)', pts: 8, tag: 'Classic Summer Fun' },
-  { n:13, emoji:'🔭', title: 'Go stargazing and identify constellations', pts: 9, tag: 'Classic Summer Fun' },
-  { n:14, emoji:'🚫📱', title: 'Spend a full day screen-free', pts: 10, tag: 'Classic Summer Fun' },
+  { n: 1, emoji: '🍦', title: 'Eat a popsicle outside', pts: 1, tag: 'Classic Summer Fun' },
+  { n: 2, emoji: '🧺', title: 'Have a picnic in a park or backyard', pts: 2, tag: 'Classic Summer Fun' },
+  { n: 3, emoji: '🔦', title: 'Play flashlight tag at dusk', pts: 3, tag: 'Classic Summer Fun' },
+  { n: 4, emoji: '🌅', title: 'Watch the sunrise or sunset', pts: 3, tag: 'Classic Summer Fun' },
+  { n: 5, emoji: '🏊', title: 'Go swimming (pool, lake or splash pad)', pts: 4, tag: 'Classic Summer Fun' },
+  { n: 6, emoji: '🪁', title: 'Make and fly a kite', pts: 4, tag: 'Classic Summer Fun' },
+  { n: 7, emoji: '✨', title: 'Catch fireflies (observe & release)', pts: 5, tag: 'Classic Summer Fun' },
+  { n: 8, emoji: '🍋', title: 'Make homemade lemonade', pts: 5, tag: 'Classic Summer Fun' },
+  { n: 9, emoji: '🏰', title: 'Build a blanket or pillow fort', pts: 6, tag: 'Classic Summer Fun' },
+  { n: 10, emoji: '🔥', title: 'Roast s\'mores', pts: 6, tag: 'Classic Summer Fun' },
+  { n: 11, emoji: '🎡', title: 'Visit a local fair or festival', pts: 7, tag: 'Classic Summer Fun' },
+  { n: 12, emoji: '⛺', title: 'Camp overnight (backyard or campground)', pts: 8, tag: 'Classic Summer Fun' },
+  { n: 13, emoji: '🔭', title: 'Go stargazing and identify constellations', pts: 9, tag: 'Classic Summer Fun' },
+  { n: 14, emoji: '🚫📱', title: 'Spend a full day screen-free', pts: 10, tag: 'Classic Summer Fun' },
   // Explore & Adventure
-  { n:15, emoji:'🏛️', title: 'Visit a museum or science center', pts: 3, tag: 'Explore & Adventure' },
-  { n:16, emoji:'🌳', title: 'Explore a new park or trail', pts: 3, tag: 'Explore & Adventure' },
-  { n:17, emoji:'🔍', title: 'Go on a nature scavenger hunt', pts: 4, tag: 'Explore & Adventure' },
-  { n:18, emoji:'🚲', title: 'Ride bikes on a greenway or trail', pts: 4, tag: 'Explore & Adventure' },
-  { n:19, emoji:'📜', title: 'Visit a historical site', pts: 5, tag: 'Explore & Adventure' },
-  { n:20, emoji:'📍', title: 'Try geocaching', pts: 5, tag: 'Explore & Adventure' },
-  { n:21, emoji:'🛶', title: 'Go kayaking or canoeing', pts: 6, tag: 'Explore & Adventure' },
-  { n:22, emoji:'🚗', title: 'Take a day trip somewhere new', pts: 6, tag: 'Explore & Adventure' },
-  { n:23, emoji:'🚶', title: 'Go on a guided tour (nature, art or city)', pts: 7, tag: 'Explore & Adventure' },
-  { n:24, emoji:'📋', title: 'Plan and lead a family outing', pts: 8, tag: 'Explore & Adventure' },
-  { n:25, emoji:'🥾', title: 'Complete a hike over 3 miles', pts: 9, tag: 'Explore & Adventure' },
-  { n:26, emoji:'🏞️', title: 'Explore a state or national park', pts: 10, tag: 'Explore & Adventure' },
+  { n: 15, emoji: '🏛️', title: 'Visit a museum or science center', pts: 3, tag: 'Explore & Adventure' },
+  { n: 16, emoji: '🌳', title: 'Explore a new park or trail', pts: 3, tag: 'Explore & Adventure' },
+  { n: 17, emoji: '🔍', title: 'Go on a nature scavenger hunt', pts: 4, tag: 'Explore & Adventure' },
+  { n: 18, emoji: '🚲', title: 'Ride bikes on a greenway or trail', pts: 4, tag: 'Explore & Adventure' },
+  { n: 19, emoji: '📜', title: 'Visit a historical site', pts: 5, tag: 'Explore & Adventure' },
+  { n: 20, emoji: '📍', title: 'Try geocaching', pts: 5, tag: 'Explore & Adventure' },
+  { n: 21, emoji: '🛶', title: 'Go kayaking or canoeing', pts: 6, tag: 'Explore & Adventure' },
+  { n: 22, emoji: '🚗', title: 'Take a day trip somewhere new', pts: 6, tag: 'Explore & Adventure' },
+  { n: 23, emoji: '🚶', title: 'Go on a guided tour (nature, art or city)', pts: 7, tag: 'Explore & Adventure' },
+  { n: 24, emoji: '📋', title: 'Plan and lead a family outing', pts: 8, tag: 'Explore & Adventure' },
+  { n: 25, emoji: '🥾', title: 'Complete a hike over 3 miles', pts: 9, tag: 'Explore & Adventure' },
+  { n: 26, emoji: '🏞️', title: 'Explore a state or national park', pts: 10, tag: 'Explore & Adventure' },
   // Learn a Skill
-  { n:27, emoji:'🍳', title: 'Learn to cook a new breakfast food', pts: 2, tag: 'Learn a Skill' },
-  { n:28, emoji:'🥘', title: 'Learn to cook a full meal', pts: 4, tag: 'Learn a Skill' },
-  { n:29, emoji:'🧁', title: 'Bake something from scratch', pts: 4, tag: 'Learn a Skill' },
-  { n:30, emoji:'🩹', title: 'Learn basic first aid skills', pts: 5, tag: 'Learn a Skill' },
-  { n:31, emoji:'🪢', title: 'Learn a new knot (square, clove hitch, etc.)', pts: 5, tag: 'Learn a Skill' },
-  { n:32, emoji:'🧵', title: 'Learn to sew a button', pts: 5, tag: 'Learn a Skill' },
-  { n:33, emoji:'🗺️', title: 'Learn basic map-reading skills', pts: 6, tag: 'Learn a Skill' },
-  { n:34, emoji:'⚽', title: 'Learn a new sport or physical skill', pts: 6, tag: 'Learn a Skill' },
-  { n:35, emoji:'💰', title: 'Learn to budget for an outing or event', pts: 7, tag: 'Learn a Skill' },
-  { n:36, emoji:'🎵', title: 'Learn a new instrument or song', pts: 7, tag: 'Learn a Skill' },
-  { n:37, emoji:'🗣️', title: 'Teach a skill you know to someone else', pts: 8, tag: 'Learn a Skill' },
-  { n:38, emoji:'🎖️', title: 'Earn part of a Girl Scout badge', pts: 9, tag: 'Learn a Skill' },
-  { n:39, emoji:'🧩', title: 'Master a completely new hobby', pts: 10, tag: 'Learn a Skill' },
+  { n: 27, emoji: '🍳', title: 'Learn to cook a new breakfast food', pts: 2, tag: 'Learn a Skill' },
+  { n: 28, emoji: '🥘', title: 'Learn to cook a full meal', pts: 4, tag: 'Learn a Skill' },
+  { n: 29, emoji: '🧁', title: 'Bake something from scratch', pts: 4, tag: 'Learn a Skill' },
+  { n: 30, emoji: '🩹', title: 'Learn basic first aid skills', pts: 5, tag: 'Learn a Skill' },
+  { n: 31, emoji: '🪢', title: 'Learn a new knot (square, clove hitch, etc.)', pts: 5, tag: 'Learn a Skill' },
+  { n: 32, emoji: '🧵', title: 'Learn to sew a button', pts: 5, tag: 'Learn a Skill' },
+  { n: 33, emoji: '🗺️', title: 'Learn basic map-reading skills', pts: 6, tag: 'Learn a Skill' },
+  { n: 34, emoji: '⚽', title: 'Learn a new sport or physical skill', pts: 6, tag: 'Learn a Skill' },
+  { n: 35, emoji: '💰', title: 'Learn to budget for an outing or event', pts: 7, tag: 'Learn a Skill' },
+  { n: 36, emoji: '🎵', title: 'Learn a new instrument or song', pts: 7, tag: 'Learn a Skill' },
+  { n: 37, emoji: '🗣️', title: 'Teach a skill you know to someone else', pts: 8, tag: 'Learn a Skill' },
+  { n: 38, emoji: '🎖️', title: 'Earn part of a Girl Scout badge', pts: 9, tag: 'Learn a Skill' },
+  { n: 39, emoji: '🧩', title: 'Master a completely new hobby', pts: 10, tag: 'Learn a Skill' },
   // Create & Express
-  { n:40, emoji:'🎨', title: 'Draw or paint something inspired by nature', pts: 2, tag: 'Create & Express' },
-  { n:41, emoji:'✍️', title: 'Write a short story or poem', pts: 3, tag: 'Create & Express' },
-  { n:42, emoji:'🧶', title: 'Make friendship bracelets or SWAPS', pts: 3, tag: 'Create & Express' },
-  { n:43, emoji:'🖍️', title: 'Create sidewalk chalk art', pts: 3, tag: 'Create & Express' },
-  { n:44, emoji:'♻️', title: 'Build something with recycled materials', pts: 4, tag: 'Create & Express' },
-  { n:45, emoji:'📸', title: 'Take creative photos of summer moments', pts: 4, tag: 'Create & Express' },
-  { n:46, emoji:'📖', title: 'Create a scrapbook or memory page', pts: 5, tag: 'Create & Express' },
-  { n:47, emoji:'🎥', title: 'Make a short video or skit', pts: 5, tag: 'Create & Express' },
-  { n:48, emoji:'✉️', title: 'Design your own patch and send it to info@girlscoutsp2p.org', pts: 6, tag: 'Create & Express' },
-  { n:49, emoji:'🎭', title: 'Perform a song, skit or dance for others', pts: 7, tag: 'Create & Express' },
-  { n:50, emoji:'💝', title: 'Create a piece of art to gift or donate', pts: 8, tag: 'Create & Express' },
-  { n:51, emoji:'🖼️', title: 'Organize an art show or performance', pts: 9, tag: 'Create & Express' },
-  { n:52, emoji:'✨', title: 'Complete a multi-day creative project', pts: 10, tag: 'Create & Express' },
+  { n: 40, emoji: '🎨', title: 'Draw or paint something inspired by nature', pts: 2, tag: 'Create & Express' },
+  { n: 41, emoji: '✍️', title: 'Write a short story or poem', pts: 3, tag: 'Create & Express' },
+  { n: 42, emoji: '🧶', title: 'Make friendship bracelets or SWAPS', pts: 3, tag: 'Create & Express' },
+  { n: 43, emoji: '🖍️', title: 'Create sidewalk chalk art', pts: 3, tag: 'Create & Express' },
+  { n: 44, emoji: '♻️', title: 'Build something with recycled materials', pts: 4, tag: 'Create & Express' },
+  { n: 45, emoji: '📸', title: 'Take creative photos of summer moments', pts: 4, tag: 'Create & Express' },
+  { n: 46, emoji: '📖', title: 'Create a scrapbook or memory page', pts: 5, tag: 'Create & Express' },
+  { n: 47, emoji: '🎥', title: 'Make a short video or skit', pts: 5, tag: 'Create & Express' },
+  { n: 48, emoji: '✉️', title: 'Design your own patch and send it to info@girlscoutsp2p.org', pts: 6, tag: 'Create & Express' },
+  { n: 49, emoji: '🎭', title: 'Perform a song, skit or dance for others', pts: 7, tag: 'Create & Express' },
+  { n: 50, emoji: '💝', title: 'Create a piece of art to gift or donate', pts: 8, tag: 'Create & Express' },
+  { n: 51, emoji: '🖼️', title: 'Organize an art show or performance', pts: 9, tag: 'Create & Express' },
+  { n: 52, emoji: '✨', title: 'Complete a multi-day creative project', pts: 10, tag: 'Create & Express' },
   // Service & Leadership
-  { n:53, emoji:'💌', title: 'Write thank-you notes to community helpers', pts: 2, tag: 'Service & Leadership' },
-  { n:54, emoji:'📦', title: 'Donate books, toys or clothes', pts: 3, tag: 'Service & Leadership' },
-  { n:55, emoji:'🤝', title: 'Help a neighbor with a task', pts: 3, tag: 'Service & Leadership' },
-  { n:56, emoji:'🧤', title: 'Pick up litter in a public space', pts: 4, tag: 'Service & Leadership' },
-  { n:57, emoji:'💌', title: 'Make cards for seniors or hospital patients', pts: 4, tag: 'Service & Leadership' },
-  { n:58, emoji:'🥫', title: 'Participate in a food drive', pts: 5, tag: 'Service & Leadership' },
-  { n:59, emoji:'🌟', title: 'Volunteer with family or troop', pts: 6, tag: 'Service & Leadership' },
-  { n:60, emoji:'📋', title: 'Plan a small service project', pts: 6, tag: 'Service & Leadership' },
-  { n:61, emoji:'📣', title: 'Lead a group activity or game', pts: 7, tag: 'Service & Leadership' },
-  { n:62, emoji:'📢', title: 'Educate others about an issue you care about', pts: 7, tag: 'Service & Leadership' },
-  { n:63, emoji:'🚀', title: 'Complete a troop Take Action project', pts: 9, tag: 'Service & Leadership' },
-  { n:64, emoji:'🏆', title: 'Lead a service event for others', pts: 10, tag: 'Service & Leadership' },
+  { n: 53, emoji: '💌', title: 'Write thank-you notes to community helpers', pts: 2, tag: 'Service & Leadership' },
+  { n: 54, emoji: '📦', title: 'Donate books, toys or clothes', pts: 3, tag: 'Service & Leadership' },
+  { n: 55, emoji: '🤝', title: 'Help a neighbor with a task', pts: 3, tag: 'Service & Leadership' },
+  { n: 56, emoji: '🧤', title: 'Pick up litter in a public space', pts: 4, tag: 'Service & Leadership' },
+  { n: 57, emoji: '💌', title: 'Make cards for seniors or hospital patients', pts: 4, tag: 'Service & Leadership' },
+  { n: 58, emoji: '🥫', title: 'Participate in a food drive', pts: 5, tag: 'Service & Leadership' },
+  { n: 59, emoji: '🌟', title: 'Volunteer with family or troop', pts: 6, tag: 'Service & Leadership' },
+  { n: 60, emoji: '📋', title: 'Plan a small service project', pts: 6, tag: 'Service & Leadership' },
+  { n: 61, emoji: '📣', title: 'Lead a group activity or game', pts: 7, tag: 'Service & Leadership' },
+  { n: 62, emoji: '📢', title: 'Educate others about an issue you care about', pts: 7, tag: 'Service & Leadership' },
+  { n: 63, emoji: '🚀', title: 'Complete a troop Take Action project', pts: 9, tag: 'Service & Leadership' },
+  { n: 64, emoji: '🏆', title: 'Lead a service event for others', pts: 10, tag: 'Service & Leadership' },
   // Family & Friendship Fun
-  { n:65, emoji:'🍽️', title: 'Cook a meal together as a family', pts: 3, tag: 'Family & Friendship Fun' },
-  { n:66, emoji:'🎲', title: 'Have a family game night', pts: 3, tag: 'Family & Friendship Fun' },
-  { n:67, emoji:'🎙️', title: 'Interview a family member', pts: 4, tag: 'Family & Friendship Fun' },
-  { n:68, emoji:'🚶', title: 'Go on a family walk-and-talk', pts: 5, tag: 'Family & Friendship Fun' },
-  { n:69, emoji:'📅', title: 'Create a family tradition', pts: 5, tag: 'Family & Friendship Fun' },
-  { n:70, emoji:'👥', title: 'Plan a troop or friend meetup', pts: 6, tag: 'Family & Friendship Fun' },
-  { n:71, emoji:'🎶', title: 'Teach your family a Girl Scout song', pts: 6, tag: 'Family & Friendship Fun' },
-  { n:72, emoji:'🎬', title: 'Host a themed movie night', pts: 7, tag: 'Family & Friendship Fun' },
-  { n:73, emoji:'🫙', title: 'Create a family memory jar', pts: 8, tag: 'Family & Friendship Fun' },
+  { n: 65, emoji: '🍽️', title: 'Cook a meal together as a family', pts: 3, tag: 'Family & Friendship Fun' },
+  { n: 66, emoji: '🎲', title: 'Have a family game night', pts: 3, tag: 'Family & Friendship Fun' },
+  { n: 67, emoji: '🎙️', title: 'Interview a family member', pts: 4, tag: 'Family & Friendship Fun' },
+  { n: 68, emoji: '🚶', title: 'Go on a family walk-and-talk', pts: 5, tag: 'Family & Friendship Fun' },
+  { n: 69, emoji: '📅', title: 'Create a family tradition', pts: 5, tag: 'Family & Friendship Fun' },
+  { n: 70, emoji: '👥', title: 'Plan a troop or friend meetup', pts: 6, tag: 'Family & Friendship Fun' },
+  { n: 71, emoji: '🎶', title: 'Teach your family a Girl Scout song', pts: 6, tag: 'Family & Friendship Fun' },
+  { n: 72, emoji: '🎬', title: 'Host a themed movie night', pts: 7, tag: 'Family & Friendship Fun' },
+  { n: 73, emoji: '🫙', title: 'Create a family memory jar', pts: 8, tag: 'Family & Friendship Fun' },
   // Chill & Reflect
-  { n:74, emoji:'📖', title: 'Read a book just for fun', pts: 2, tag: 'Chill & Reflect' },
-  { n:75, emoji:'🌳', title: 'Read outside under a tree', pts: 3, tag: 'Chill & Reflect' },
-  { n:76, emoji:'📔', title: 'Start a summer journal', pts: 4, tag: 'Chill & Reflect' },
-  { n:77, emoji:'🧘', title: 'Try yoga or mindfulness outdoors', pts: 5, tag: 'Chill & Reflect' },
-  { n:78, emoji:'💭', title: 'Write about a favorite memory', pts: 4, tag: 'Chill & Reflect' },
-  { n:79, emoji:'🕰️', title: 'Spend time alone exploring a hobby', pts: 6, tag: 'Chill & Reflect' },
-  { n:80, emoji:'✉️', title: 'Write a letter to your future self', pts: 7, tag: 'Chill & Reflect' },
-  { n:81, emoji:'💡', title: 'Reflect on how you showed leadership', pts: 8, tag: 'Chill & Reflect' },
-  { n:82, emoji:'🎯', title: 'Set goals for the next school year', pts: 8, tag: 'Chill & Reflect' },
+  { n: 74, emoji: '📖', title: 'Read a book just for fun', pts: 2, tag: 'Chill & Reflect' },
+  { n: 75, emoji: '🌳', title: 'Read outside under a tree', pts: 3, tag: 'Chill & Reflect' },
+  { n: 76, emoji: '📔', title: 'Start a summer journal', pts: 4, tag: 'Chill & Reflect' },
+  { n: 77, emoji: '🧘', title: 'Try yoga or mindfulness outdoors', pts: 5, tag: 'Chill & Reflect' },
+  { n: 78, emoji: '💭', title: 'Write about a favorite memory', pts: 4, tag: 'Chill & Reflect' },
+  { n: 79, emoji: '🕰️', title: 'Spend time alone exploring a hobby', pts: 6, tag: 'Chill & Reflect' },
+  { n: 80, emoji: '✉️', title: 'Write a letter to your future self', pts: 7, tag: 'Chill & Reflect' },
+  { n: 81, emoji: '💡', title: 'Reflect on how you showed leadership', pts: 8, tag: 'Chill & Reflect' },
+  { n: 82, emoji: '🎯', title: 'Set goals for the next school year', pts: 8, tag: 'Chill & Reflect' },
   // Big Adventures & Challenges
-  { n:83, emoji:'⚡', title: 'Complete 10 activities in one week', pts: 7, tag: 'Big Adventures & Challenges' },
-  { n:84, emoji:'🌟', title: 'Try something that scares you (safely!)', pts: 8, tag: 'Big Adventures & Challenges' },
-  { n:85, emoji:'🌈', title: 'Complete activities from all categories', pts: 8, tag: 'Big Adventures & Challenges' },
-  { n:86, emoji:'🥇', title: 'Earn 50 total points', pts: 8, tag: 'Big Adventures & Challenges' },
-  { n:87, emoji:'🎖️', title: 'Earn 75 total points', pts: 9, tag: 'Big Adventures & Challenges' },
-  { n:88, emoji:'🏆', title: 'Earn 100 total points', pts: 10, tag: 'Big Adventures & Challenges' },
-  { n:89, emoji:'🔍', title: 'Create your own scavenger hunt item', pts: 6, tag: 'Big Adventures & Challenges' },
-  { n:90, emoji:'📣', title: 'Lead a group to complete an activity', pts: 7, tag: 'Big Adventures & Challenges' },
-  { n:91, emoji:'📷', title: 'Document your adventure with photos and email them to: bit.ly/48dRdU6', pts: 6, tag: 'Big Adventures & Challenges' },
-  { n:92, emoji:'🧠', title: 'Teach someone about the GSLE', pts: 7, tag: 'Big Adventures & Challenges' },
-  { n:93, emoji:'🗺️', title: 'Plan a full adventure day itinerary', pts: 9, tag: 'Big Adventures & Challenges' },
-  { n:94, emoji:'🔥', title: 'Complete a multi-day challenge streak', pts: 10, tag: 'Big Adventures & Challenges' },
+  { n: 83, emoji: '⚡', title: 'Complete 10 activities in one week', pts: 7, tag: 'Big Adventures & Challenges' },
+  { n: 84, emoji: '🌟', title: 'Try something that scares you (safely!)', pts: 8, tag: 'Big Adventures & Challenges' },
+  { n: 85, emoji: '🌈', title: 'Complete activities from all categories', pts: 8, tag: 'Big Adventures & Challenges' },
+  { n: 86, emoji: '🥇', title: 'Earn 50 total points', pts: 8, tag: 'Big Adventures & Challenges' },
+  { n: 87, emoji: '🎖️', title: 'Earn 75 total points', pts: 9, tag: 'Big Adventures & Challenges' },
+  { n: 88, emoji: '🏆', title: 'Earn 100 total points', pts: 10, tag: 'Big Adventures & Challenges' },
+  { n: 89, emoji: '🔍', title: 'Create your own scavenger hunt item', pts: 6, tag: 'Big Adventures & Challenges' },
+  { n: 90, emoji: '📣', title: 'Lead a group to complete an activity', pts: 7, tag: 'Big Adventures & Challenges' },
+  { n: 91, emoji: '📷', title: 'Document your adventure with photos and email them to: bit.ly/48dRdU6', pts: 6, tag: 'Big Adventures & Challenges' },
+  { n: 92, emoji: '🧠', title: 'Teach someone about the GSLE', pts: 7, tag: 'Big Adventures & Challenges' },
+  { n: 93, emoji: '🗺️', title: 'Plan a full adventure day itinerary', pts: 9, tag: 'Big Adventures & Challenges' },
+  { n: 94, emoji: '🔥', title: 'Complete a multi-day challenge streak', pts: 10, tag: 'Big Adventures & Challenges' },
   // Bonus & Make Your Own
-  { n:95, emoji:'🍎', title: 'Try a food you’ve never eaten before', pts: 3, tag: 'Bonus & Make Your Own' },
-  { n:96, emoji:'🌍', title: 'Learn about another culture', pts: 4, tag: 'Bonus & Make Your Own' },
-  { n:97, emoji:'📚', title: 'Visit a local library or bookstore', pts: 3, tag: 'Bonus & Make Your Own' },
-  { n:98, emoji:'🎧', title: 'Create your own summer playlist', pts: 2, tag: 'Bonus & Make Your Own' },
-  { n:99, emoji:'🛠️', title: 'Make up your own adventure activity', pts: 5, tag: 'Bonus & Make Your Own' },
-  { n:100, emoji:'🍕', title: 'Sign up for Pizza Hut Book It Program', pts: 7, tag: 'Bonus & Make Your Own' },
-  { n:101, emoji:'🎁', title: 'Earn rewards for the Pizza Hut Book It Program', pts: 10, tag: 'Bonus & Make Your Own' },
-  { n:102, emoji:'📣', title: 'Lead a group to complete an activity', pts: 7, tag: 'Bonus & Make Your Own' },
-  { n:103, emoji:'📧', title: 'Send your adventure photos to bit.ly/48dRdU6', pts: 10, tag: 'Bonus & Make Your Own' }
+  { n: 95, emoji: '🍎', title: 'Try a food you’ve never eaten before', pts: 3, tag: 'Bonus & Make Your Own' },
+  { n: 96, emoji: '🌍', title: 'Learn about another culture', pts: 4, tag: 'Bonus & Make Your Own' },
+  { n: 97, emoji: '📚', title: 'Visit a local library or bookstore', pts: 3, tag: 'Bonus & Make Your Own' },
+  { n: 98, emoji: '🎧', title: 'Create your own summer playlist', pts: 2, tag: 'Bonus & Make Your Own' },
+  { n: 99, emoji: '🛠️', title: 'Make up your own adventure activity', pts: 5, tag: 'Bonus & Make Your Own' },
+  { n: 100, emoji: '🍕', title: 'Sign up for Pizza Hut Book It Program', pts: 7, tag: 'Bonus & Make Your Own' },
+  { n: 101, emoji: '🎁', title: 'Earn rewards for the Pizza Hut Book It Program', pts: 10, tag: 'Bonus & Make Your Own' },
+  { n: 102, emoji: '📣', title: 'Lead a group to complete an activity', pts: 7, tag: 'Bonus & Make Your Own' },
+  { n: 103, emoji: '📧', title: 'Send your adventure photos to bit.ly/48dRdU6', pts: 10, tag: 'Bonus & Make Your Own' }
 ];
 
 let done = new Set();
